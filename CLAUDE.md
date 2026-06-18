@@ -25,7 +25,7 @@ Compose + Material3 + adaptive-navigation-suite · Hilt (KSP) · Retrofit + OkHt
 kotlinx.serialization · Room (KSP) · Paging 3 (network-only in v1) · Coil 3 ·
 Navigation Compose (type-safe `@Serializable` routes) · Coroutines + Flow.
 
-- Toolchain: **KSP** (not kapt), **Java 17** via `jvmToolchain(17)`. `minSdk 24`.
+- Toolchain: **AGP 8.13.2 + Gradle 8.13** (downgraded from the starter's AGP 9.2.1 — Hilt's latest, 2.56.2, can't apply on AGP 9: `BaseExtension not found`). **KSP** (not kapt), **Java 17** via `jvmToolchain(17)`. `minSdk 24`, `compileSdk 36`. All plugin versions declared once at the root `build.gradle.kts` (`apply false`); modules apply version-less aliases. Revisit AGP 9 only once a Hilt release supports it.
 - List sprites: derive id from item `url`, build official-artwork URL by convention.
 - Offline scope v1: **favorites only** (denormalized Room snapshot). Browse list
   needs network. RemoteMediator offline browse is a stretch chunk.
