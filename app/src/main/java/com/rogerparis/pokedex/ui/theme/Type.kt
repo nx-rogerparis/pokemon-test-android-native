@@ -1,4 +1,4 @@
-package com.rogerparis.androidkotlintest.ui.theme
+package com.rogerparis.pokedex.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

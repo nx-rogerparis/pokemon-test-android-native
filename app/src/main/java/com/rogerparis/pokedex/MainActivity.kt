@@ -1,4 +1,4 @@
-package com.rogerparis.androidkotlintest
+package com.rogerparis.pokedex
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -20,15 +20,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
-import com.rogerparis.androidkotlintest.ui.theme.AndroidKotlinTestTheme
+import com.rogerparis.pokedex.ui.theme.PokedexTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            AndroidKotlinTestTheme {
-                AndroidKotlinTestApp()
+            PokedexTheme {
+                PokedexRoot()
             }
         }
     }
@@ -36,7 +36,7 @@ class MainActivity : ComponentActivity() {
 
 @PreviewScreenSizes
 @Composable
-fun AndroidKotlinTestApp() {
+fun PokedexRoot() {
     var currentDestination by rememberSaveable { mutableStateOf(AppDestinations.HOME) }
 
     NavigationSuiteScaffold(
@@ -85,7 +85,7 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
-    AndroidKotlinTestTheme {
+    PokedexTheme {
         Greeting("Android")
     }
 }

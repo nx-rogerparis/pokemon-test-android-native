@@ -1,4 +1,4 @@
-package com.rogerparis.androidkotlintest
+package com.rogerparis.pokedex
 
 import org.junit.Test
 
