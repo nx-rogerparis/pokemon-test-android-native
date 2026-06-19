@@ -4,7 +4,9 @@ import android.content.Context
 import androidx.room.Room
 import com.rogerparis.pokedex.data.local.FavoriteDao
 import com.rogerparis.pokedex.data.local.MIGRATION_1_2
+import com.rogerparis.pokedex.data.local.MIGRATION_2_3
 import com.rogerparis.pokedex.data.local.PokedexDatabase
+import com.rogerparis.pokedex.data.local.PokemonDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -20,10 +22,13 @@ object DatabaseModule {
     @Singleton
     fun provideDatabase(@ApplicationContext context: Context): PokedexDatabase =
         Room.databaseBuilder(context, PokedexDatabase::class.java, "pokedex.db")
-            .addMigrations(MIGRATION_1_2)
+            .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
             .fallbackToDestructiveMigration(dropAllTables = true)
             .build()
 
     @Provides
     fun provideFavoriteDao(database: PokedexDatabase): FavoriteDao = database.favoriteDao()
+
+    @Provides
+    fun providePokemonDao(database: PokedexDatabase): PokemonDao = database.pokemonDao()
 }

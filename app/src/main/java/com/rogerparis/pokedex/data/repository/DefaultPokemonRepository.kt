@@ -1,15 +1,19 @@
 package com.rogerparis.pokedex.data.repository
 
+import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import androidx.paging.map
 import com.rogerparis.pokedex.data.local.FavoriteDao
+import com.rogerparis.pokedex.data.local.PokedexDatabase
+import com.rogerparis.pokedex.data.local.PokemonDao
 import com.rogerparis.pokedex.data.mapper.toDomain
 import com.rogerparis.pokedex.data.mapper.toFavoriteEntity
 import com.rogerparis.pokedex.data.mapper.toListEntry
 import com.rogerparis.pokedex.data.mapper.toPokemon
 import com.rogerparis.pokedex.data.remote.PokeApi
-import com.rogerparis.pokedex.data.remote.PokemonPagingSource
+import com.rogerparis.pokedex.data.remote.PokemonRemoteMediator
 import com.rogerparis.pokedex.domain.error.ApiResult
 import com.rogerparis.pokedex.domain.error.AppError
 import com.rogerparis.pokedex.domain.model.Pokemon
@@ -24,13 +28,17 @@ import javax.inject.Inject
 class DefaultPokemonRepository @Inject constructor(
     private val api: PokeApi,
     private val favoriteDao: FavoriteDao,
+    private val database: PokedexDatabase,
+    private val pokemonDao: PokemonDao,
 ) : PokemonRepository {
 
+    @OptIn(ExperimentalPagingApi::class)
     override fun pokemonPager(): Flow<PagingData<PokemonListEntry>> =
         Pager(
             config = PagingConfig(pageSize = 20),
-            pagingSourceFactory = { PokemonPagingSource(api) },
-        ).flow
+            remoteMediator = PokemonRemoteMediator(api, database, pokemonDao),
+            pagingSourceFactory = { pokemonDao.pagingSource() },
+        ).flow.map { pagingData -> pagingData.map { entity -> entity.toListEntry() } }
 
     override fun observeFavorites(): Flow<List<PokemonListEntry>> =
         favoriteDao.observeAll().map { list -> list.map { it.toListEntry() } }

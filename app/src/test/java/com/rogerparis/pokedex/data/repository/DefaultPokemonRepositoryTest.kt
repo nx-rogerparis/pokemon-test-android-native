@@ -2,6 +2,8 @@ package com.rogerparis.pokedex.data.repository
 
 import com.rogerparis.pokedex.data.local.FavoriteDao
 import com.rogerparis.pokedex.data.local.FavoriteEntity
+import com.rogerparis.pokedex.data.local.PokedexDatabase
+import com.rogerparis.pokedex.data.local.PokemonDao
 import com.rogerparis.pokedex.data.remote.PokeApi
 import com.rogerparis.pokedex.data.remote.dto.PokemonDetailDto
 import com.rogerparis.pokedex.domain.model.Stat
@@ -21,7 +23,9 @@ import java.io.IOException
 class DefaultPokemonRepositoryTest {
     private val api = mockk<PokeApi>()
     private val favoriteDao = mockk<FavoriteDao>()
-    private val repository = DefaultPokemonRepository(api, favoriteDao)
+    private val database = mockk<PokedexDatabase>()
+    private val pokemonDao = mockk<PokemonDao>()
+    private val repository = DefaultPokemonRepository(api, favoriteDao, database, pokemonDao)
 
     private fun detailDto() = PokemonDetailDto(
         id = 1, name = "bulbasaur", height = 7, weight = 69,

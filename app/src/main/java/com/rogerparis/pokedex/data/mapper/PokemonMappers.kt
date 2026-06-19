@@ -1,5 +1,6 @@
 package com.rogerparis.pokedex.data.mapper
 
+import com.rogerparis.pokedex.data.local.PokemonEntity
 import com.rogerparis.pokedex.data.remote.officialArtworkUrl
 import com.rogerparis.pokedex.data.remote.pokemonIdFromUrl
 import com.rogerparis.pokedex.data.remote.dto.PokemonDetailDto
@@ -23,3 +24,6 @@ fun PokemonDetailDto.toDomain(): Pokemon = Pokemon(
     abilities = abilities.map { it.ability.name },
     artworkUrl = officialArtworkUrl(id),
 )
+
+fun PokemonEntity.toListEntry(): PokemonListEntry =
+    PokemonListEntry(id = id, name = name, artworkUrl = artworkUrl)
