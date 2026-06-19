@@ -1,8 +1,10 @@
 package com.rogerparis.pokedex.data.repository
 
 import com.rogerparis.pokedex.data.local.FavoriteDao
+import com.rogerparis.pokedex.data.local.FavoriteEntity
 import com.rogerparis.pokedex.data.remote.PokeApi
 import com.rogerparis.pokedex.data.remote.dto.PokemonDetailDto
+import com.rogerparis.pokedex.domain.model.Stat
 import com.rogerparis.pokedex.domain.error.ApiResult
 import com.rogerparis.pokedex.domain.error.AppError
 import io.mockk.coEvery
@@ -35,10 +37,26 @@ class DefaultPokemonRepositoryTest {
     }
 
     @Test
-    fun `maps IOException to Network error`() = runTest {
+    fun `maps IOException to Network error when not favorited`() = runTest {
         coEvery { api.getPokemonDetail(1) } throws IOException("no connection")
+        coEvery { favoriteDao.getById(1) } returns null
         val result = repository.getPokemon(1)
         assertEquals(ApiResult.Error(AppError.Network), result)
+    }
+
+    @Test
+    fun `falls back to favorite snapshot when offline and favorited`() = runTest {
+        coEvery { api.getPokemonDetail(1) } throws IOException("offline")
+        coEvery { favoriteDao.getById(1) } returns FavoriteEntity(
+            id = 1, name = "bulbasaur", artworkUrl = "u", types = listOf("grass"),
+            heightDm = 7, weightHg = 69, abilities = listOf("overgrow"), stats = listOf(Stat("hp", 45)),
+        )
+
+        val result = repository.getPokemon(1)
+
+        assertEquals(ApiResult.Success::class, result::class)
+        assertEquals("bulbasaur", (result as ApiResult.Success).data.name)
+        assertEquals(listOf("grass"), result.data.types)
     }
 
     @Test

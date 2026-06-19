@@ -2,6 +2,7 @@ package com.rogerparis.pokedex.data.local
 
 import androidx.room.Room
 import app.cash.turbine.test
+import com.rogerparis.pokedex.domain.model.Stat
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -31,7 +32,17 @@ class FavoriteDaoTest {
     fun tearDown() = db.close()
 
     private fun entity(id: Int) =
-        FavoriteEntity(id = id, name = "p$id", artworkUrl = "u$id", types = listOf("grass"))
+        FavoriteEntity(
+            id = id, name = "p$id", artworkUrl = "u$id", types = listOf("grass"),
+            heightDm = 7, weightHg = 69, abilities = listOf("overgrow"), stats = listOf(Stat(name = "hp", baseValue = 45)),
+        )
+
+    @Test
+    fun `getById returns the entity or null`() = runTest {
+        assertEquals(null, dao.getById(1))
+        dao.add(entity(1))
+        assertEquals(entity(1), dao.getById(1))
+    }
 
     @Test
     fun `add then observeAll emits the favorite`() = runTest {

@@ -7,6 +7,7 @@ import com.rogerparis.pokedex.data.local.FavoriteDao
 import com.rogerparis.pokedex.data.mapper.toDomain
 import com.rogerparis.pokedex.data.mapper.toFavoriteEntity
 import com.rogerparis.pokedex.data.mapper.toListEntry
+import com.rogerparis.pokedex.data.mapper.toPokemon
 import com.rogerparis.pokedex.data.remote.PokeApi
 import com.rogerparis.pokedex.data.remote.PokemonPagingSource
 import com.rogerparis.pokedex.domain.error.ApiResult
@@ -47,6 +48,8 @@ class DefaultPokemonRepository @Inject constructor(
             if (e.code() == 404) ApiResult.Error(AppError.NotFound)
             else ApiResult.Error(AppError.Unknown(e.message()))
         } catch (e: IOException) {
-            ApiResult.Error(AppError.Network)
+            val snapshot = favoriteDao.getById(id)
+            if (snapshot != null) ApiResult.Success(snapshot.toPokemon())
+            else ApiResult.Error(AppError.Network)
         }
 }

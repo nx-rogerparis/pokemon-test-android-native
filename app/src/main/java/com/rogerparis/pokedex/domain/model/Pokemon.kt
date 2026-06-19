@@ -1,5 +1,7 @@
 package com.rogerparis.pokedex.domain.model
 
+import kotlinx.serialization.Serializable
+
 data class PokemonListEntry(
     val id: Int,
     val name: String,
@@ -17,6 +19,7 @@ data class Pokemon(
     val artworkUrl: String,
 )
 
+@Serializable
 data class Stat(
     val name: String,
     val baseValue: Int,
