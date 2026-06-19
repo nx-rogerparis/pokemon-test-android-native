@@ -3,6 +3,7 @@ package com.rogerparis.pokedex.ui.detail
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -12,7 +13,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.outlined.FavoriteBorder
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -31,6 +31,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.rogerparis.pokedex.domain.error.AppError
 import com.rogerparis.pokedex.domain.model.Pokemon
+import com.rogerparis.pokedex.ui.components.ErrorState
+import com.rogerparis.pokedex.ui.components.LoadingState
+import com.rogerparis.pokedex.ui.components.PokemonTypeChip
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -75,8 +78,8 @@ fun PokemonDetailScreen(
             contentAlignment = Alignment.Center,
         ) {
             when (val s = state) {
-                is DetailUiState.Loading -> CircularProgressIndicator()
-                is DetailUiState.Error -> Text(s.error.toMessage())
+                is DetailUiState.Loading -> LoadingState()
+                is DetailUiState.Error -> ErrorState(s.error.toMessage(), onRetry = viewModel::retry)
                 is DetailUiState.Success -> PokemonDetail(s.pokemon)
             }
         }
@@ -98,7 +101,9 @@ private fun PokemonDetail(pokemon: Pokemon) {
             contentDescription = pokemon.name,
             modifier = Modifier.size(200.dp),
         )
-        Text("Types: " + pokemon.types.joinToString { it.capitalize(Locale.current) })
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            pokemon.types.forEach { type -> PokemonTypeChip(type) }
+        }
         Text("Height: ${pokemon.heightDm / 10.0} m   Weight: ${pokemon.weightHg / 10.0} kg")
         Text("Abilities: " + pokemon.abilities.joinToString { it.capitalize(Locale.current) })
         pokemon.stats.forEach { stat ->

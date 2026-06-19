@@ -1,15 +1,12 @@
 package com.rogerparis.pokedex.ui.list
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.Text
@@ -25,6 +22,8 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import coil3.compose.AsyncImage
 import com.rogerparis.pokedex.domain.model.PokemonListEntry
+import com.rogerparis.pokedex.ui.components.ErrorState
+import com.rogerparis.pokedex.ui.components.LoadingState
 
 @Composable
 fun PokemonListScreen(
@@ -34,11 +33,13 @@ fun PokemonListScreen(
 ) {
     val items = viewModel.pokemon.collectAsLazyPagingItems()
 
-    when (val refresh = items.loadState.refresh) {
-        is LoadState.Loading -> FullScreenCenter(modifier) { CircularProgressIndicator() }
-        is LoadState.Error -> FullScreenCenter(modifier) {
-            ErrorMessage(onRetry = items::retry)
-        }
+    when (items.loadState.refresh) {
+        is LoadState.Loading -> LoadingState(modifier)
+        is LoadState.Error -> ErrorState(
+            message = "Couldn't load Pokémon. Check your connection.",
+            onRetry = items::retry,
+            modifier = modifier,
+        )
         else -> LazyColumn(modifier = modifier.fillMaxSize()) {
             items(count = items.itemCount, key = items.itemKey { it.id }) { index ->
                 val entry = items[index] ?: return@items
@@ -50,22 +51,6 @@ fun PokemonListScreen(
                 else -> Unit
             }
         }
-    }
-}
-
-@Composable
-private fun FullScreenCenter(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
-    Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) { content() }
-}
-
-@Composable
-private fun ErrorMessage(onRetry: () -> Unit) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-    ) {
-        Text("Couldn't load Pokémon. Check your connection.")
-        Button(onClick = onRetry) { Text("Retry") }
     }
 }
 
