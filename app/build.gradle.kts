@@ -57,6 +57,8 @@ dependencies {
     testImplementation(libs.mockk)
     testImplementation(libs.turbine)
     testImplementation(libs.robolectric)
+    testImplementation(platform(libs.androidx.compose.bom))
+    testImplementation(libs.androidx.compose.ui.test.junit4)
 
     implementation(libs.androidx.paging.runtime)
     implementation(libs.androidx.paging.compose)
