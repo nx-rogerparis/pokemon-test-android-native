@@ -88,4 +88,18 @@ class PokemonDetailViewModelTest {
 
         coVerify { repository.removeFavorite(1) }
     }
+
+    @Test
+    fun `toggleFavorite removes even when detail failed to load (offline)`() = runTest {
+        coEvery { repository.getPokemon(1) } returns ApiResult.Error(AppError.Network)
+        coEvery { repository.isFavorite(1) } returns flowOf(true)
+        coJustRun { repository.removeFavorite(1) }
+
+        val vm = viewModel()
+        runCurrent()
+        vm.toggleFavorite()
+        runCurrent()
+
+        coVerify { repository.removeFavorite(1) }
+    }
 }

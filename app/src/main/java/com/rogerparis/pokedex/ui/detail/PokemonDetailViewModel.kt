@@ -36,11 +36,12 @@ class PokemonDetailViewModel @Inject constructor(
     fun retry() = load()
 
     fun toggleFavorite() {
-        val current = state.value
-        if (current !is DetailUiState.Success) return
         viewModelScope.launch {
-            if (isFavorite.value) repository.removeFavorite(pokemonId)
-            else repository.addFavorite(current.pokemon)
+            if (isFavorite.value) {
+                repository.removeFavorite(pokemonId)
+            } else {
+                (state.value as? DetailUiState.Success)?.let { repository.addFavorite(it.pokemon) }
+            }
         }
     }
 
