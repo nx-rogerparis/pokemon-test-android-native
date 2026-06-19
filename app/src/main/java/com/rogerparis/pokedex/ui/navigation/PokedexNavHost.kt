@@ -9,6 +9,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.rogerparis.pokedex.ui.detail.PokemonDetailScreen
+import com.rogerparis.pokedex.ui.favorites.FavoritesScreen
 import com.rogerparis.pokedex.ui.list.PokemonListScreen
 
 private enum class TopDestination(val label: String) {
@@ -46,7 +47,7 @@ fun PokedexNavHost() {
                 PokemonDetailScreen(onBack = { navController.popBackStack() })
             }
             composable<FavoritesRoute> {
-                Text("Favorites — coming in the next plan")
+                FavoritesScreen(onPokemonClick = { id -> navController.navigate(DetailRoute(id)) })
             }
         }
     }
