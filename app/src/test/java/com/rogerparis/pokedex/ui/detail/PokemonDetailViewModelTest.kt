@@ -8,9 +8,14 @@ import com.rogerparis.pokedex.domain.error.AppError
 import com.rogerparis.pokedex.domain.model.Pokemon
 import com.rogerparis.pokedex.domain.repository.PokemonRepository
 import io.mockk.coEvery
+import io.mockk.coJustRun
+import io.mockk.coVerify
 import io.mockk.mockk
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -28,6 +33,11 @@ class PokemonDetailViewModelTest {
 
     private fun viewModel() =
         PokemonDetailViewModel(SavedStateHandle(mapOf("id" to 1)), repository)
+
+    @Before
+    fun stubFavoriteDefault() {
+        coEvery { repository.isFavorite(1) } returns flowOf(false)
+    }
 
     @Test
     fun `emits Loading then Success`() = runTest {
@@ -49,5 +59,33 @@ class PokemonDetailViewModelTest {
             assertEquals(DetailUiState.Error(AppError.Network), awaitItem())
             cancelAndIgnoreRemainingEvents()
         }
+    }
+
+    @Test
+    fun `toggleFavorite adds when not currently favorite`() = runTest {
+        coEvery { repository.getPokemon(1) } returns ApiResult.Success(pokemon())
+        coEvery { repository.isFavorite(1) } returns flowOf(false)
+        coJustRun { repository.addFavorite(any()) }
+
+        val vm = viewModel()
+        runCurrent()
+        vm.toggleFavorite()
+        runCurrent()
+
+        coVerify { repository.addFavorite(pokemon()) }
+    }
+
+    @Test
+    fun `toggleFavorite removes when currently favorite`() = runTest {
+        coEvery { repository.getPokemon(1) } returns ApiResult.Success(pokemon())
+        coEvery { repository.isFavorite(1) } returns flowOf(true)
+        coJustRun { repository.removeFavorite(1) }
+
+        val vm = viewModel()
+        runCurrent()
+        vm.toggleFavorite()
+        runCurrent()
+
+        coVerify { repository.removeFavorite(1) }
     }
 }
