@@ -9,4 +9,8 @@ import kotlinx.coroutines.flow.Flow
 interface PokemonRepository {
     fun pokemonPager(): Flow<PagingData<PokemonListEntry>>
     suspend fun getPokemon(id: Int): ApiResult<Pokemon>
+    fun observeFavorites(): Flow<List<PokemonListEntry>>
+    fun isFavorite(id: Int): Flow<Boolean>
+    suspend fun addFavorite(pokemon: Pokemon)
+    suspend fun removeFavorite(id: Int)
 }
