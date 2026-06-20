@@ -5,6 +5,7 @@ import com.rogerparis.pokedex.data.local.FavoriteEntity
 import com.rogerparis.pokedex.data.local.PokedexDatabase
 import com.rogerparis.pokedex.data.local.PokemonDao
 import com.rogerparis.pokedex.data.local.PokemonIndexDao
+import com.rogerparis.pokedex.data.local.TeamMemberDao
 import com.rogerparis.pokedex.data.remote.PokeApi
 import com.rogerparis.pokedex.data.remote.dto.PokemonDetailDto
 import com.rogerparis.pokedex.data.remote.dto.PokemonListItemDto
@@ -12,6 +13,7 @@ import com.rogerparis.pokedex.data.remote.dto.PokemonListResponse
 import com.rogerparis.pokedex.domain.model.Stat
 import com.rogerparis.pokedex.domain.error.ApiResult
 import com.rogerparis.pokedex.domain.error.AppError
+import com.rogerparis.pokedex.domain.model.Pokemon
 import io.mockk.coEvery
 import io.mockk.coJustRun
 import io.mockk.coVerify
@@ -31,7 +33,12 @@ class DefaultPokemonRepositoryTest {
     private val database = mockk<PokedexDatabase>()
     private val pokemonDao = mockk<PokemonDao>()
     private val pokemonIndexDao = mockk<PokemonIndexDao>()
-    private val repository = DefaultPokemonRepository(api, favoriteDao, database, pokemonDao, pokemonIndexDao)
+    private val teamMemberDao = mockk<TeamMemberDao>()
+    private val repository =
+        DefaultPokemonRepository(api, favoriteDao, database, pokemonDao, pokemonIndexDao, teamMemberDao)
+
+    private fun samplePokemon() =
+        Pokemon(1, "bulbasaur", 7, 69, listOf("grass"), emptyList(), listOf("overgrow"), "u")
 
     private fun detailDto() = PokemonDetailDto(
         id = 1, name = "bulbasaur", height = 7, weight = 69,
@@ -102,5 +109,26 @@ class DefaultPokemonRepositoryTest {
         repository.ensureSearchIndex()
 
         coVerify(exactly = 0) { api.getPokemonList(any(), any()) }
+    }
+
+    @Test
+    fun `addToTeam inserts and returns true when below max`() = runTest {
+        coEvery { teamMemberDao.count() } returns 3
+        coJustRun { teamMemberDao.upsert(any()) }
+
+        val added = repository.addToTeam(samplePokemon())
+
+        assertEquals(true, added)
+        coVerify { teamMemberDao.upsert(any()) }
+    }
+
+    @Test
+    fun `addToTeam returns false and does not insert when team is full`() = runTest {
+        coEvery { teamMemberDao.count() } returns 6
+
+        val added = repository.addToTeam(samplePokemon())
+
+        assertEquals(false, added)
+        coVerify(exactly = 0) { teamMemberDao.upsert(any()) }
     }
 }

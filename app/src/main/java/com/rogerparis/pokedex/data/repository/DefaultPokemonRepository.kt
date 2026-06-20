@@ -10,6 +10,8 @@ import com.rogerparis.pokedex.data.local.PokedexDatabase
 import com.rogerparis.pokedex.data.local.PokemonDao
 import com.rogerparis.pokedex.data.local.PokemonIndexDao
 import com.rogerparis.pokedex.data.local.PokemonIndexEntity
+import com.rogerparis.pokedex.data.local.TeamMemberDao
+import com.rogerparis.pokedex.data.local.TeamMemberEntity
 import com.rogerparis.pokedex.data.mapper.toDomain
 import com.rogerparis.pokedex.data.mapper.toEntry
 import com.rogerparis.pokedex.data.mapper.toFavoriteEntity
@@ -28,12 +30,15 @@ import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
 
+private const val TEAM_MAX = 6
+
 class DefaultPokemonRepository @Inject constructor(
     private val api: PokeApi,
     private val favoriteDao: FavoriteDao,
     private val database: PokedexDatabase,
     private val pokemonDao: PokemonDao,
     private val pokemonIndexDao: PokemonIndexDao,
+    private val teamMemberDao: TeamMemberDao,
 ) : PokemonRepository {
 
     @OptIn(ExperimentalPagingApi::class)
@@ -75,6 +80,40 @@ class DefaultPokemonRepository @Inject constructor(
             config = PagingConfig(pageSize = 20),
             pagingSourceFactory = { pokemonIndexDao.search(query) },
         ).flow.map { pagingData -> pagingData.map { entity -> entity.toListEntry() } }
+
+    override fun observeTeam(): Flow<List<PokemonListEntry>> =
+        teamMemberDao.observeAll().map { list -> list.map { it.toListEntry() } }
+
+    override fun isInTeam(id: Int): Flow<Boolean> = teamMemberDao.observeIsMember(id)
+
+    override suspend fun addToTeam(pokemon: Pokemon): Boolean {
+        val count = teamMemberDao.count()
+        if (count >= TEAM_MAX) return false
+        teamMemberDao.upsert(
+            TeamMemberEntity(
+                id = pokemon.id,
+                name = pokemon.name,
+                artworkUrl = pokemon.artworkUrl,
+                position = count,
+            ),
+        )
+        return true
+    }
+
+    override suspend fun removeFromTeam(id: Int) = teamMemberDao.remove(id)
+
+    override suspend fun moveTeamMember(id: Int, up: Boolean) {
+        val ordered = teamMemberDao.getAllOnce().toMutableList()
+        val index = ordered.indexOfFirst { it.id == id }
+        if (index < 0) return
+        val target = if (up) index - 1 else index + 1
+        if (target !in ordered.indices) return
+        val tmp = ordered[index]
+        ordered[index] = ordered[target]
+        ordered[target] = tmp
+        val renumbered = ordered.mapIndexed { i, m -> m.copy(position = i) }
+        database.withTransaction { teamMemberDao.upsertAll(renumbered) }
+    }
 
     override suspend fun getPokemon(id: Int): ApiResult<Pokemon> =
         try {
