@@ -10,3 +10,6 @@ data class DetailRoute(val id: Int)
 
 @Serializable
 data object FavoritesRoute
+
+@Serializable
+data object TeamRoute

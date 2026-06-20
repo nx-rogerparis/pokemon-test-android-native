@@ -11,10 +11,12 @@ import androidx.navigation.compose.rememberNavController
 import com.rogerparis.pokedex.ui.detail.PokemonDetailScreen
 import com.rogerparis.pokedex.ui.favorites.FavoritesScreen
 import com.rogerparis.pokedex.ui.list.PokemonListScreen
+import com.rogerparis.pokedex.ui.team.TeamScreen
 
 private enum class TopDestination(val label: String) {
     LIST("Browse"),
     FAVORITES("Favorites"),
+    TEAM("Team"),
 }
 
 @Composable
@@ -37,6 +39,12 @@ fun PokedexNavHost() {
                 icon = {},
                 label = { Text(TopDestination.FAVORITES.label) },
             )
+            item(
+                selected = currentRoute?.contains("TeamRoute") == true,
+                onClick = { navController.navigate(TeamRoute) },
+                icon = {},
+                label = { Text(TopDestination.TEAM.label) },
+            )
         },
     ) {
         NavHost(navController = navController, startDestination = ListRoute) {
@@ -48,6 +56,9 @@ fun PokedexNavHost() {
             }
             composable<FavoritesRoute> {
                 FavoritesScreen(onPokemonClick = { id -> navController.navigate(DetailRoute(id)) })
+            }
+            composable<TeamRoute> {
+                TeamScreen(onPokemonClick = { id -> navController.navigate(DetailRoute(id)) })
             }
         }
     }
