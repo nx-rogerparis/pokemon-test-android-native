@@ -6,9 +6,11 @@ import com.rogerparis.pokedex.data.local.FavoriteDao
 import com.rogerparis.pokedex.data.local.MIGRATION_1_2
 import com.rogerparis.pokedex.data.local.MIGRATION_2_3
 import com.rogerparis.pokedex.data.local.MIGRATION_3_4
+import com.rogerparis.pokedex.data.local.MIGRATION_4_5
 import com.rogerparis.pokedex.data.local.PokedexDatabase
 import com.rogerparis.pokedex.data.local.PokemonDao
 import com.rogerparis.pokedex.data.local.PokemonIndexDao
+import com.rogerparis.pokedex.data.local.TeamMemberDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -24,7 +26,7 @@ object DatabaseModule {
     @Singleton
     fun provideDatabase(@ApplicationContext context: Context): PokedexDatabase =
         Room.databaseBuilder(context, PokedexDatabase::class.java, "pokedex.db")
-            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4)
+            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5)
             .fallbackToDestructiveMigration(dropAllTables = true)
             .build()
 
@@ -36,4 +38,7 @@ object DatabaseModule {
 
     @Provides
     fun providePokemonIndexDao(database: PokedexDatabase): PokemonIndexDao = database.pokemonIndexDao()
+
+    @Provides
+    fun provideTeamMemberDao(database: PokedexDatabase): TeamMemberDao = database.teamMemberDao()
 }

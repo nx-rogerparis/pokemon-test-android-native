@@ -31,3 +31,13 @@ val MIGRATION_3_4 = object : Migration(3, 4) {
         )
     }
 }
+
+val MIGRATION_4_5 = object : Migration(4, 5) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL(
+            "CREATE TABLE IF NOT EXISTS `team_members` (" +
+                "`id` INTEGER NOT NULL, `name` TEXT NOT NULL, " +
+                "`artworkUrl` TEXT NOT NULL, `position` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        )
+    }
+}

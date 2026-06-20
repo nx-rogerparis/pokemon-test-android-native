@@ -5,8 +5,8 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 
 @Database(
-    entities = [FavoriteEntity::class, PokemonEntity::class, PokemonIndexEntity::class],
-    version = 4,
+    entities = [FavoriteEntity::class, PokemonEntity::class, PokemonIndexEntity::class, TeamMemberEntity::class],
+    version = 5,
     exportSchema = false,
 )
 @TypeConverters(Converters::class)
@@ -14,4 +14,5 @@ abstract class PokedexDatabase : RoomDatabase() {
     abstract fun favoriteDao(): FavoriteDao
     abstract fun pokemonDao(): PokemonDao
     abstract fun pokemonIndexDao(): PokemonIndexDao
+    abstract fun teamMemberDao(): TeamMemberDao
 }
