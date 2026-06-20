@@ -35,8 +35,9 @@ class PokemonDetailViewModelTest {
         PokemonDetailViewModel(SavedStateHandle(mapOf("id" to 1)), repository)
 
     @Before
-    fun stubFavoriteDefault() {
+    fun stubDefaults() {
         coEvery { repository.isFavorite(1) } returns flowOf(false)
+        coEvery { repository.isInTeam(1) } returns flowOf(false)
     }
 
     @Test
@@ -101,5 +102,48 @@ class PokemonDetailViewModelTest {
         runCurrent()
 
         coVerify { repository.removeFavorite(1) }
+    }
+
+    @Test
+    fun `toggleTeam adds when not in team and succeeds`() = runTest {
+        coEvery { repository.getPokemon(1) } returns ApiResult.Success(pokemon())
+        coEvery { repository.isInTeam(1) } returns flowOf(false)
+        coEvery { repository.addToTeam(any()) } returns true
+
+        val vm = viewModel()
+        runCurrent()
+        vm.toggleTeam()
+        runCurrent()
+
+        coVerify { repository.addToTeam(pokemon()) }
+        assertEquals(null, vm.userMessage.value)
+    }
+
+    @Test
+    fun `toggleTeam sets message when team is full`() = runTest {
+        coEvery { repository.getPokemon(1) } returns ApiResult.Success(pokemon())
+        coEvery { repository.isInTeam(1) } returns flowOf(false)
+        coEvery { repository.addToTeam(any()) } returns false
+
+        val vm = viewModel()
+        runCurrent()
+        vm.toggleTeam()
+        runCurrent()
+
+        assertEquals("Team is full (max 6).", vm.userMessage.value)
+    }
+
+    @Test
+    fun `toggleTeam removes when already in team`() = runTest {
+        coEvery { repository.getPokemon(1) } returns ApiResult.Success(pokemon())
+        coEvery { repository.isInTeam(1) } returns flowOf(true)
+        coJustRun { repository.removeFromTeam(1) }
+
+        val vm = viewModel()
+        runCurrent()
+        vm.toggleTeam()
+        runCurrent()
+
+        coVerify { repository.removeFromTeam(1) }
     }
 }

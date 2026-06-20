@@ -45,6 +45,30 @@ class PokemonDetailViewModel @Inject constructor(
         }
     }
 
+    val isInTeam: StateFlow<Boolean> =
+        repository.isInTeam(pokemonId)
+            .stateIn(viewModelScope, SharingStarted.Eagerly, false)
+
+    private val _userMessage = MutableStateFlow<String?>(null)
+    val userMessage: StateFlow<String?> = _userMessage.asStateFlow()
+
+    fun consumeMessage() {
+        _userMessage.value = null
+    }
+
+    fun toggleTeam() {
+        viewModelScope.launch {
+            if (isInTeam.value) {
+                repository.removeFromTeam(pokemonId)
+            } else {
+                val current = state.value as? DetailUiState.Success ?: return@launch
+                if (!repository.addToTeam(current.pokemon)) {
+                    _userMessage.value = "Team is full (max 6)."
+                }
+            }
+        }
+    }
+
     private fun load() {
         viewModelScope.launch {
             _state.value = DetailUiState.Loading
