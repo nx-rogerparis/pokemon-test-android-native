@@ -8,7 +8,10 @@ import androidx.paging.map
 import com.rogerparis.pokedex.data.local.FavoriteDao
 import com.rogerparis.pokedex.data.local.PokedexDatabase
 import com.rogerparis.pokedex.data.local.PokemonDao
+import com.rogerparis.pokedex.data.local.PokemonIndexDao
+import com.rogerparis.pokedex.data.local.PokemonIndexEntity
 import com.rogerparis.pokedex.data.mapper.toDomain
+import com.rogerparis.pokedex.data.mapper.toEntry
 import com.rogerparis.pokedex.data.mapper.toFavoriteEntity
 import com.rogerparis.pokedex.data.mapper.toListEntry
 import com.rogerparis.pokedex.data.mapper.toPokemon
@@ -30,6 +33,7 @@ class DefaultPokemonRepository @Inject constructor(
     private val favoriteDao: FavoriteDao,
     private val database: PokedexDatabase,
     private val pokemonDao: PokemonDao,
+    private val pokemonIndexDao: PokemonIndexDao,
 ) : PokemonRepository {
 
     @OptIn(ExperimentalPagingApi::class)
@@ -48,6 +52,29 @@ class DefaultPokemonRepository @Inject constructor(
     override suspend fun addFavorite(pokemon: Pokemon) = favoriteDao.add(pokemon.toFavoriteEntity())
 
     override suspend fun removeFavorite(id: Int) = favoriteDao.remove(id)
+
+    override suspend fun ensureSearchIndex() {
+        if (pokemonIndexDao.count() > 0) return
+        try {
+            val response = api.getPokemonList(limit = 100_000, offset = 0)
+            pokemonIndexDao.insertAll(
+                response.results.map {
+                    val entry = it.toEntry()
+                    PokemonIndexEntity(id = entry.id, name = entry.name, artworkUrl = entry.artworkUrl)
+                },
+            )
+        } catch (e: IOException) {
+            // best-effort: offline search is unavailable until the index is populated
+        } catch (e: HttpException) {
+            // best-effort
+        }
+    }
+
+    override fun searchPager(query: String): Flow<PagingData<PokemonListEntry>> =
+        Pager(
+            config = PagingConfig(pageSize = 20),
+            pagingSourceFactory = { pokemonIndexDao.search(query) },
+        ).flow.map { pagingData -> pagingData.map { entity -> entity.toListEntry() } }
 
     override suspend fun getPokemon(id: Int): ApiResult<Pokemon> =
         try {

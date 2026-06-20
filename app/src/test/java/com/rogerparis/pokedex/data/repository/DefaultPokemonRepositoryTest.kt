@@ -4,12 +4,17 @@ import com.rogerparis.pokedex.data.local.FavoriteDao
 import com.rogerparis.pokedex.data.local.FavoriteEntity
 import com.rogerparis.pokedex.data.local.PokedexDatabase
 import com.rogerparis.pokedex.data.local.PokemonDao
+import com.rogerparis.pokedex.data.local.PokemonIndexDao
 import com.rogerparis.pokedex.data.remote.PokeApi
 import com.rogerparis.pokedex.data.remote.dto.PokemonDetailDto
+import com.rogerparis.pokedex.data.remote.dto.PokemonListItemDto
+import com.rogerparis.pokedex.data.remote.dto.PokemonListResponse
 import com.rogerparis.pokedex.domain.model.Stat
 import com.rogerparis.pokedex.domain.error.ApiResult
 import com.rogerparis.pokedex.domain.error.AppError
 import io.mockk.coEvery
+import io.mockk.coJustRun
+import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import okhttp3.MediaType.Companion.toMediaType
@@ -25,7 +30,8 @@ class DefaultPokemonRepositoryTest {
     private val favoriteDao = mockk<FavoriteDao>()
     private val database = mockk<PokedexDatabase>()
     private val pokemonDao = mockk<PokemonDao>()
-    private val repository = DefaultPokemonRepository(api, favoriteDao, database, pokemonDao)
+    private val pokemonIndexDao = mockk<PokemonIndexDao>()
+    private val repository = DefaultPokemonRepository(api, favoriteDao, database, pokemonDao, pokemonIndexDao)
 
     private fun detailDto() = PokemonDetailDto(
         id = 1, name = "bulbasaur", height = 7, weight = 69,
@@ -71,5 +77,30 @@ class DefaultPokemonRepositoryTest {
         coEvery { api.getPokemonDetail(1) } throws http404
         val result = repository.getPokemon(1)
         assertEquals(ApiResult.Error(AppError.NotFound), result)
+    }
+
+    @Test
+    fun `ensureSearchIndex fetches and inserts when index is empty`() = runTest {
+        coEvery { pokemonIndexDao.count() } returns 0
+        coEvery { api.getPokemonList(limit = 100_000, offset = 0) } returns PokemonListResponse(
+            count = 1,
+            next = null,
+            previous = null,
+            results = listOf(PokemonListItemDto(name = "bulbasaur", url = "https://pokeapi.co/api/v2/pokemon/1/")),
+        )
+        coJustRun { pokemonIndexDao.insertAll(any()) }
+
+        repository.ensureSearchIndex()
+
+        coVerify { pokemonIndexDao.insertAll(any()) }
+    }
+
+    @Test
+    fun `ensureSearchIndex does nothing when already populated`() = runTest {
+        coEvery { pokemonIndexDao.count() } returns 1300
+
+        repository.ensureSearchIndex()
+
+        coVerify(exactly = 0) { api.getPokemonList(any(), any()) }
     }
 }

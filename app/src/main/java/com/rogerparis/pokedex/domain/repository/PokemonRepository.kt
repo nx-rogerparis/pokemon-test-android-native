@@ -13,4 +13,6 @@ interface PokemonRepository {
     fun isFavorite(id: Int): Flow<Boolean>
     suspend fun addFavorite(pokemon: Pokemon)
     suspend fun removeFavorite(id: Int)
+    suspend fun ensureSearchIndex()
+    fun searchPager(query: String): Flow<PagingData<PokemonListEntry>>
 }
