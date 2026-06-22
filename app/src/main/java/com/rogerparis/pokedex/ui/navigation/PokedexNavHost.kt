@@ -1,9 +1,11 @@
 package com.rogerparis.pokedex.ui.navigation
 
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -49,16 +51,25 @@ fun PokedexNavHost() {
     ) {
         NavHost(navController = navController, startDestination = ListRoute) {
             composable<ListRoute> {
-                PokemonListScreen(onPokemonClick = { id -> navController.navigate(DetailRoute(id)) })
+                PokemonListScreen(
+                    onPokemonClick = { id -> navController.navigate(DetailRoute(id)) },
+                    modifier = Modifier.statusBarsPadding(),
+                )
             }
             composable<DetailRoute> {
                 PokemonDetailScreen(onBack = { navController.popBackStack() })
             }
             composable<FavoritesRoute> {
-                FavoritesScreen(onPokemonClick = { id -> navController.navigate(DetailRoute(id)) })
+                FavoritesScreen(
+                    onPokemonClick = { id -> navController.navigate(DetailRoute(id)) },
+                    modifier = Modifier.statusBarsPadding(),
+                )
             }
             composable<TeamRoute> {
-                TeamScreen(onPokemonClick = { id -> navController.navigate(DetailRoute(id)) })
+                TeamScreen(
+                    onPokemonClick = { id -> navController.navigate(DetailRoute(id)) },
+                    modifier = Modifier.statusBarsPadding(),
+                )
             }
         }
     }
