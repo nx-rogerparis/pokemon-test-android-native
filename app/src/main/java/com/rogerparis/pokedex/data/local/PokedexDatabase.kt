@@ -7,7 +7,7 @@ import androidx.room.TypeConverters
 @Database(
     entities = [FavoriteEntity::class, PokemonEntity::class, PokemonIndexEntity::class, TeamMemberEntity::class],
     version = 5,
-    exportSchema = false,
+    exportSchema = true,
 )
 @TypeConverters(Converters::class)
 abstract class PokedexDatabase : RoomDatabase() {
