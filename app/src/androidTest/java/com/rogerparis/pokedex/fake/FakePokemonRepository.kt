@@ -22,8 +22,15 @@ class FakePokemonRepository @Inject constructor() : PokemonRepository {
         PokemonListEntry(7, "squirtle", "https://img/7.png"),
     )
 
-    private val favorites = MutableStateFlow<List<PokemonListEntry>>(emptyList())
-    private val favoriteIds = MutableStateFlow<Set<Int>>(emptySet())
+    // Seeded so UI tests can exercise list rendering + navigation through a
+    // non-Paging screen (Paging-backed lists don't sync cleanly under Compose UI tests).
+    private val favorites = MutableStateFlow(
+        listOf(
+            PokemonListEntry(1, "bulbasaur", "https://img/1.png"),
+            PokemonListEntry(4, "charmander", "https://img/4.png"),
+        ),
+    )
+    private val favoriteIds = MutableStateFlow(setOf(1, 4))
     private val team = MutableStateFlow<List<PokemonListEntry>>(emptyList())
 
     private fun pokemon(id: Int) = Pokemon(
