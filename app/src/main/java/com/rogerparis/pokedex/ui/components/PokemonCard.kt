@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.rogerparis.pokedex.domain.model.PokemonListEntry
+import com.rogerparis.pokedex.ui.navigation.pokemonArtworkTransition
 import com.rogerparis.pokedex.ui.theme.cardBrush
 import com.rogerparis.pokedex.ui.theme.typeColor
 
@@ -80,7 +81,9 @@ fun PokemonCard(
         AsyncImage(
             model = entry.artworkUrl,
             contentDescription = entry.name,
-            modifier = Modifier.size(84.dp),
+            modifier = Modifier
+                .pokemonArtworkTransition(entry.id)
+                .size(84.dp),
         )
         if (trailing != null) trailing()
     }

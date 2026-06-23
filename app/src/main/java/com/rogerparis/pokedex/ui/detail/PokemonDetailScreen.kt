@@ -56,6 +56,7 @@ import com.rogerparis.pokedex.ui.components.ErrorState
 import com.rogerparis.pokedex.ui.components.LoadingState
 import com.rogerparis.pokedex.ui.components.PokemonTypeChip
 import com.rogerparis.pokedex.ui.components.StatBar
+import com.rogerparis.pokedex.ui.navigation.pokemonArtworkTransition
 import com.rogerparis.pokedex.ui.theme.heroBrush
 import com.rogerparis.pokedex.ui.theme.typeColor
 
@@ -147,7 +148,10 @@ private fun PokemonDetailContent(pokemon: Pokemon) {
             AsyncImage(
                 model = pokemon.artworkUrl,
                 contentDescription = pokemon.name,
-                modifier = Modifier.size(200.dp).padding(top = 24.dp),
+                modifier = Modifier
+                    .pokemonArtworkTransition(pokemon.id)
+                    .size(200.dp)
+                    .padding(top = 24.dp),
             )
         }
         Column(
