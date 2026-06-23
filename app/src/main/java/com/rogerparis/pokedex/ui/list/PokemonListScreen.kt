@@ -72,6 +72,7 @@ fun PokemonListScreen(
                             entry = entry,
                             onClick = onPokemonClick,
                             resolveType = viewModel::primaryTypeOf,
+                            modifier = Modifier.animateItem(),
                         )
                     }
                     when (items.loadState.append) {

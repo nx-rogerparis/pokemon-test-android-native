@@ -37,6 +37,7 @@ fun FavoritesScreen(
                 entry = entry,
                 onClick = onPokemonClick,
                 resolveType = viewModel::primaryTypeOf,
+                modifier = Modifier.animateItem(),
             )
         }
     }

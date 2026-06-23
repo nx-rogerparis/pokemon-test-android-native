@@ -44,6 +44,7 @@ fun TeamScreen(
                 entry = entry,
                 onClick = onPokemonClick,
                 resolveType = viewModel::primaryTypeOf,
+                modifier = Modifier.animateItem(),
                 trailing = {
                     Row {
                         IconButton(onClick = { viewModel.moveUp(entry.id) }, enabled = index > 0) {
