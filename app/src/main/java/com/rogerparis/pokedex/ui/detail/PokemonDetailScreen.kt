@@ -1,5 +1,11 @@
 package com.rogerparis.pokedex.ui.detail
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -94,18 +100,30 @@ fun PokemonDetailScreen(
                 }
                 Row {
                     IconButton(onClick = viewModel::toggleFavorite) {
-                        Icon(
-                            imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
-                            contentDescription = if (isFavorite) "Remove from favorites" else "Add to favorites",
-                            tint = Color.White,
-                        )
+                        AnimatedContent(
+                            targetState = isFavorite,
+                            transitionSpec = { (scaleIn() + fadeIn()) togetherWith (scaleOut() + fadeOut()) },
+                            label = "favorite",
+                        ) { fav ->
+                            Icon(
+                                imageVector = if (fav) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
+                                contentDescription = if (fav) "Remove from favorites" else "Add to favorites",
+                                tint = Color.White,
+                            )
+                        }
                     }
                     IconButton(onClick = viewModel::toggleTeam) {
-                        Icon(
-                            imageVector = if (isInTeam) Icons.Filled.Groups else Icons.Outlined.Groups,
-                            contentDescription = if (isInTeam) "Remove from team" else "Add to team",
-                            tint = Color.White,
-                        )
+                        AnimatedContent(
+                            targetState = isInTeam,
+                            transitionSpec = { (scaleIn() + fadeIn()) togetherWith (scaleOut() + fadeOut()) },
+                            label = "team",
+                        ) { inTeam ->
+                            Icon(
+                                imageVector = if (inTeam) Icons.Filled.Groups else Icons.Outlined.Groups,
+                                contentDescription = if (inTeam) "Remove from team" else "Add to team",
+                                tint = Color.White,
+                            )
+                        }
                     }
                 }
             }
