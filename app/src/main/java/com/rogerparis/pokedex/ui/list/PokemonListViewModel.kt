@@ -41,4 +41,6 @@ class PokemonListViewModel @Inject constructor(
                 }
             }
             .cachedIn(viewModelScope)
+
+    suspend fun primaryTypeOf(id: Int): String? = repository.primaryType(id)
 }

@@ -19,6 +19,8 @@ class TeamViewModel @Inject constructor(
         repository.observeTeam()
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
+    suspend fun primaryTypeOf(id: Int): String? = repository.primaryType(id)
+
     fun moveUp(id: Int) = move(id, up = true)
 
     fun moveDown(id: Int) = move(id, up = false)

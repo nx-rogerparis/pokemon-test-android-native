@@ -7,7 +7,9 @@ import com.rogerparis.pokedex.data.local.PokemonDao
 import com.rogerparis.pokedex.data.local.PokemonIndexDao
 import com.rogerparis.pokedex.data.local.TeamMemberDao
 import com.rogerparis.pokedex.data.remote.PokeApi
+import com.rogerparis.pokedex.data.remote.dto.NamedApiResourceDto
 import com.rogerparis.pokedex.data.remote.dto.PokemonDetailDto
+import com.rogerparis.pokedex.data.remote.dto.TypeSlotDto
 import com.rogerparis.pokedex.data.remote.dto.PokemonListItemDto
 import com.rogerparis.pokedex.data.remote.dto.PokemonListResponse
 import com.rogerparis.pokedex.domain.model.Stat
@@ -130,5 +132,32 @@ class DefaultPokemonRepositoryTest {
 
         assertEquals(false, added)
         coVerify(exactly = 0) { teamMemberDao.upsert(any()) }
+    }
+
+    @Test
+    fun `primaryType returns first type and caches it`() = runTest {
+        coEvery { api.getPokemonDetail(1) } returns PokemonDetailDto(
+            id = 1, name = "bulbasaur", height = 7, weight = 69,
+            types = listOf(
+                TypeSlotDto(slot = 2, type = NamedApiResourceDto("poison", "u")),
+                TypeSlotDto(slot = 1, type = NamedApiResourceDto("grass", "u")),
+            ),
+            stats = emptyList(), abilities = emptyList(),
+        )
+
+        val first = repository.primaryType(1)
+        val second = repository.primaryType(1)
+
+        assertEquals("grass", first)
+        assertEquals("grass", second)
+        coVerify(exactly = 1) { api.getPokemonDetail(1) }
+    }
+
+    @Test
+    fun `primaryType returns null on error`() = runTest {
+        coEvery { api.getPokemonDetail(1) } throws IOException("offline")
+        coEvery { favoriteDao.getById(1) } returns null
+
+        assertEquals(null, repository.primaryType(1))
     }
 }

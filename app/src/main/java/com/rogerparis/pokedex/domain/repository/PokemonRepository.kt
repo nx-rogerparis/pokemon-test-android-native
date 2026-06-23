@@ -15,6 +15,7 @@ interface PokemonRepository {
     suspend fun removeFavorite(id: Int)
     suspend fun ensureSearchIndex()
     fun searchPager(query: String): Flow<PagingData<PokemonListEntry>>
+    suspend fun primaryType(id: Int): String?
     fun observeTeam(): Flow<List<PokemonListEntry>>
     fun isInTeam(id: Int): Flow<Boolean>
     suspend fun addToTeam(pokemon: Pokemon): Boolean

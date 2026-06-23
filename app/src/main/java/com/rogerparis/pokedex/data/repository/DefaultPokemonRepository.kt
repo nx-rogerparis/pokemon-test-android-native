@@ -82,6 +82,16 @@ class DefaultPokemonRepository @Inject constructor(
             pagingSourceFactory = { pokemonIndexDao.search(query) },
         ).flow.map { pagingData -> pagingData.map { entity -> entity.toListEntry() } }
 
+    private val primaryTypeCache = java.util.concurrent.ConcurrentHashMap<Int, String>()
+
+    override suspend fun primaryType(id: Int): String? {
+        primaryTypeCache[id]?.let { return it }
+        return when (val result = getPokemon(id)) {
+            is ApiResult.Success -> result.data.types.firstOrNull()?.also { primaryTypeCache[id] = it }
+            is ApiResult.Error -> null
+        }
+    }
+
     override fun observeTeam(): Flow<List<PokemonListEntry>> =
         teamMemberDao.observeAll().map { list -> list.map { it.toListEntry() } }
 

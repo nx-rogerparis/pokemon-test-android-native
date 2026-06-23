@@ -27,9 +27,9 @@ import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import com.rogerparis.pokedex.ui.components.EmptyState
+import com.rogerparis.pokedex.ui.components.EnrichedPokemonCard
 import com.rogerparis.pokedex.ui.components.ErrorState
 import com.rogerparis.pokedex.ui.components.LoadingState
-import com.rogerparis.pokedex.ui.components.PokemonCard
 
 @Composable
 fun PokemonListScreen(
@@ -68,7 +68,11 @@ fun PokemonListScreen(
                 ) {
                     items(count = items.itemCount, key = items.itemKey { it.id }) { index ->
                         val entry = items[index] ?: return@items
-                        PokemonCard(entry = entry, types = emptyList(), onClick = onPokemonClick)
+                        EnrichedPokemonCard(
+                            entry = entry,
+                            onClick = onPokemonClick,
+                            resolveType = viewModel::primaryTypeOf,
+                        )
                     }
                     when (items.loadState.append) {
                         is LoadState.Loading -> item { LoadingFooter() }

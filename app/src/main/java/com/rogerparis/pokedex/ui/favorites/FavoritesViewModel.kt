@@ -12,9 +12,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FavoritesViewModel @Inject constructor(
-    repository: PokemonRepository,
+    private val repository: PokemonRepository,
 ) : ViewModel() {
     val favorites: StateFlow<List<PokemonListEntry>> =
         repository.observeFavorites()
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+
+    suspend fun primaryTypeOf(id: Int): String? = repository.primaryType(id)
 }
