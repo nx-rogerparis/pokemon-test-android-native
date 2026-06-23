@@ -1,0 +1,69 @@
+<h2>Type Card (A) — text treatment</h2>
+<p class="subtitle">Same layout, three ways to handle the number + name color. Click your favourite; say so in the terminal if you want a tweak.</p>
+
+<style>
+  .pd-phone { background:#f2f3f5; border-radius:22px; padding:14px; display:flex; flex-direction:column; gap:12px; }
+  .pd-row { position:relative; overflow:hidden; border-radius:20px; padding:14px 16px; min-height:92px; display:flex; align-items:center; justify-content:space-between; box-shadow:0 6px 16px rgba(0,0,0,.12); background:linear-gradient(100deg, color-mix(in srgb, var(--t) 38%, #fff) 0%, #fff 78%); }
+  .pd-meta { z-index:2; }
+  .pd-name { font:800 22px system-ui, sans-serif; margin:2px 0 8px; text-transform:capitalize; }
+  .pd-chips { display:flex; gap:6px; }
+  .pd-chip { font:700 11px system-ui; color:#fff; padding:3px 10px; border-radius:999px; }
+  .pd-art { width:84px; height:84px; object-fit:contain; z-index:2; filter:drop-shadow(0 4px 8px rgba(0,0,0,.25)); }
+  .grass { --t:#7AC74C; } .fire { --t:#EE8130; } .water { --t:#6390F0; }
+
+  /* 1 · Deep type tone: name is a dark, rich version of the type color; number saturated type color */
+  .v1 .pd-num  { font:800 12px ui-monospace, monospace; letter-spacing:.5px; color:var(--t); }
+  .v1 .pd-name { color:color-mix(in srgb, var(--t) 72%, #1a1a1a); }
+
+  /* 2 · Badge number: number is a filled type pill; name a soft near-black */
+  .v2 .pd-num  { display:inline-block; font:800 11px ui-monospace, monospace; color:#fff; background:var(--t); padding:2px 8px; border-radius:8px; }
+  .v2 .pd-name { color:#26262b; margin-top:6px; }
+
+  /* 3 · Tonal mono: both number and name in a darkened type tone (cohesive, subtle) */
+  .v3 .pd-num  { font:800 12px ui-monospace, monospace; letter-spacing:.5px; color:color-mix(in srgb, var(--t) 45%, #000); opacity:.85; }
+  .v3 .pd-name { color:color-mix(in srgb, var(--t) 50%, #111); }
+</style>
+
+<div class="cards">
+  <div class="card" data-choice="1" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding:0;background:none;">
+      <div class="pd-phone v1">
+        <div class="pd-row grass"><div class="pd-meta"><div class="pd-num">#001</div><div class="pd-name">Bulbasaur</div>
+          <div class="pd-chips"><span class="pd-chip" style="background:#7AC74C">Grass</span><span class="pd-chip" style="background:#A33EA1">Poison</span></div></div>
+          <img class="pd-art" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png"></div>
+        <div class="pd-row fire"><div class="pd-meta"><div class="pd-num">#004</div><div class="pd-name">Charmander</div>
+          <div class="pd-chips"><span class="pd-chip" style="background:#EE8130">Fire</span></div></div>
+          <img class="pd-art" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/4.png"></div>
+      </div>
+    </div>
+    <div class="card-body"><h3>1 · Deep type tone</h3><p>Name in a dark, rich version of the type colour; number in the saturated type colour. Colourful but legible.</p></div>
+  </div>
+
+  <div class="card" data-choice="2" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding:0;background:none;">
+      <div class="pd-phone v2">
+        <div class="pd-row grass"><div class="pd-meta"><span class="pd-num">#001</span><div class="pd-name">Bulbasaur</div>
+          <div class="pd-chips"><span class="pd-chip" style="background:#7AC74C">Grass</span><span class="pd-chip" style="background:#A33EA1">Poison</span></div></div>
+          <img class="pd-art" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png"></div>
+        <div class="pd-row fire"><div class="pd-meta"><span class="pd-num">#004</span><div class="pd-name">Charmander</div>
+          <div class="pd-chips"><span class="pd-chip" style="background:#EE8130">Fire</span></div></div>
+          <img class="pd-art" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/4.png"></div>
+      </div>
+    </div>
+    <div class="card-body"><h3>2 · Badge number</h3><p>Number as a small filled type-colour pill; name a soft near-black. The number reads as a tag.</p></div>
+  </div>
+
+  <div class="card" data-choice="3" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding:0;background:none;">
+      <div class="pd-phone v3">
+        <div class="pd-row grass"><div class="pd-meta"><div class="pd-num">#001</div><div class="pd-name">Bulbasaur</div>
+          <div class="pd-chips"><span class="pd-chip" style="background:#7AC74C">Grass</span><span class="pd-chip" style="background:#A33EA1">Poison</span></div></div>
+          <img class="pd-art" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png"></div>
+        <div class="pd-row fire"><div class="pd-meta"><div class="pd-num">#004</div><div class="pd-name">Charmander</div>
+          <div class="pd-chips"><span class="pd-chip" style="background:#EE8130">Fire</span></div></div>
+          <img class="pd-art" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/4.png"></div>
+      </div>
+    </div>
+    <div class="card-body"><h3>3 · Tonal mono</h3><p>Both number and name in a darkened type tone — most cohesive/subtle, least contrast.</p></div>
+  </div>
+</div>

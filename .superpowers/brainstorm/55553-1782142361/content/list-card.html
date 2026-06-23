@@ -1,0 +1,85 @@
+<h2>Browse list — pick a card style</h2>
+<p class="subtitle">Playful &amp; energetic direction, type-color driven. Real artwork shown. Click the one that feels right (or mix &amp; match in the terminal).</p>
+
+<style>
+  .pd-phone { background: var(--bg, #f2f3f5); border-radius: 22px; padding: 14px; display: flex; flex-direction: column; gap: 12px; }
+  .pd-row { position: relative; overflow: hidden; border-radius: 20px; padding: 14px 16px; min-height: 92px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 6px 16px rgba(0,0,0,.12); }
+  .pd-meta { z-index: 2; }
+  .pd-num { font: 700 12px ui-monospace, monospace; opacity: .6; letter-spacing: .5px; }
+  .pd-name { font: 800 22px system-ui, sans-serif; margin: 2px 0 8px; text-transform: capitalize; }
+  .pd-chips { display: flex; gap: 6px; }
+  .pd-chip { font: 700 11px system-ui; color: #fff; padding: 3px 10px; border-radius: 999px; }
+  .pd-art { width: 84px; height: 84px; object-fit: contain; z-index: 2; filter: drop-shadow(0 4px 8px rgba(0,0,0,.25)); }
+  .pd-watermark { position: absolute; right: -10px; top: -28px; font: 900 120px system-ui; color: rgba(255,255,255,.18); z-index: 1; }
+  .grass { --t:#7AC74C; } .fire { --t:#EE8130; } .water { --t:#6390F0; } .poison { --t:#A33EA1; }
+
+  /* A: Type Card — tinted gradient, dark text */
+  .a .pd-row { background: linear-gradient(100deg, color-mix(in srgb, var(--t) 38%, #fff) 0%, #fff 78%); }
+  .a .pd-name { color: #1b1b1f; }
+
+  /* B: Gradient Hero — saturated, white text, number watermark */
+  .b .pd-row { background: linear-gradient(120deg, var(--t), color-mix(in srgb, var(--t) 60%, #000)); }
+  .b .pd-name, .b .pd-num { color: #fff; }
+
+  /* C: Minimal Tinted — white card, accent bar + halo */
+  .c .pd-row { background: #fff; padding-left: 22px; }
+  .c .pd-row::before { content:""; position:absolute; left:0; top:0; bottom:0; width:8px; background: var(--t); }
+  .c .pd-halo { position:absolute; right:6px; top:50%; transform:translateY(-50%); width:78px; height:78px; border-radius:50%; background: color-mix(in srgb, var(--t) 22%, #fff); z-index:1; }
+  .c .pd-name { color:#1b1b1f; }
+</style>
+
+<div class="cards">
+  <div class="card a" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding:0;background:none;">
+      <div class="pd-phone">
+        <div class="pd-row grass">
+          <div class="pd-meta"><div class="pd-num">#001</div><div class="pd-name">Bulbasaur</div>
+            <div class="pd-chips"><span class="pd-chip" style="background:#7AC74C">Grass</span><span class="pd-chip" style="background:#A33EA1">Poison</span></div></div>
+          <img class="pd-art" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png">
+        </div>
+        <div class="pd-row fire">
+          <div class="pd-meta"><div class="pd-num">#004</div><div class="pd-name">Charmander</div>
+            <div class="pd-chips"><span class="pd-chip" style="background:#EE8130">Fire</span></div></div>
+          <img class="pd-art" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/4.png">
+        </div>
+      </div>
+    </div>
+    <div class="card-body"><h3>A · Type Card</h3><p>Soft type-tinted gradient, dark text, artwork on the right. Friendly and readable across mixed types.</p></div>
+  </div>
+
+  <div class="card b" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding:0;background:none;">
+      <div class="pd-phone">
+        <div class="pd-row grass"><span class="pd-watermark">01</span>
+          <div class="pd-meta"><div class="pd-num">#001</div><div class="pd-name">Bulbasaur</div>
+            <div class="pd-chips"><span class="pd-chip" style="background:rgba(255,255,255,.25)">Grass</span><span class="pd-chip" style="background:rgba(255,255,255,.25)">Poison</span></div></div>
+          <img class="pd-art" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png">
+        </div>
+        <div class="pd-row water"><span class="pd-watermark">07</span>
+          <div class="pd-meta"><div class="pd-num">#007</div><div class="pd-name">Squirtle</div>
+            <div class="pd-chips"><span class="pd-chip" style="background:rgba(255,255,255,.25)">Water</span></div></div>
+          <img class="pd-art" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/7.png">
+        </div>
+      </div>
+    </div>
+    <div class="card-body"><h3>B · Gradient Hero</h3><p>Bold saturated type gradient, white text, big number watermark. Loudest and most game-like.</p></div>
+  </div>
+
+  <div class="card c" data-choice="c" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding:0;background:none;">
+      <div class="pd-phone">
+        <div class="pd-row fire"><div class="pd-halo"></div>
+          <div class="pd-meta"><div class="pd-num">#004</div><div class="pd-name">Charmander</div>
+            <div class="pd-chips"><span class="pd-chip" style="background:#EE8130">Fire</span></div></div>
+          <img class="pd-art" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/4.png">
+        </div>
+        <div class="pd-row water"><div class="pd-halo"></div>
+          <div class="pd-meta"><div class="pd-num">#007</div><div class="pd-name">Squirtle</div>
+            <div class="pd-chips"><span class="pd-chip" style="background:#6390F0">Water</span></div></div>
+          <img class="pd-art" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/7.png">
+        </div>
+      </div>
+    </div>
+    <div class="card-body"><h3>C · Minimal Tinted</h3><p>White card, type accent bar + soft halo behind artwork. Calmest of the three; ages well.</p></div>
+  </div>
+</div>

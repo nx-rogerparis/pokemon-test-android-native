@@ -1,0 +1,55 @@
+<h2>Detail hero — refined A</h2>
+<p class="subtitle">Gradient hero + curved sheet. Artwork fully visible, no number watermark, soft glow behind the art. Click to confirm, or tell me to drop the glow.</p>
+
+<style>
+  .ph { width:300px; border-radius:26px; overflow:hidden; box-shadow:0 10px 30px rgba(0,0,0,.18); background:#fff; --t:#EE8130; --t2:#A98FF3; }
+  .ph * { box-sizing:border-box; }
+  .topbar { position:absolute; top:0; left:0; right:0; display:flex; justify-content:space-between; padding:12px 14px; z-index:6; color:#fff; font:700 18px system-ui; }
+  .topbar .acts span { margin-left:14px; }
+  .hero { position:relative; height:240px; background:linear-gradient(135deg, var(--t), var(--t2)); }
+  .glow { position:absolute; left:50%; top:120px; transform:translate(-50%,-50%); width:230px; height:230px; border-radius:50%;
+          background:radial-gradient(circle, rgba(255,255,255,.42), rgba(255,255,255,0) 65%); z-index:2; }
+  .art { position:absolute; left:50%; top:40px; transform:translateX(-50%); width:172px; z-index:3;
+         filter:drop-shadow(0 14px 20px rgba(0,0,0,.35)); }
+  .sheet { position:relative; margin-top:-22px; background:#fff; border-radius:26px 26px 0 0; padding:20px 18px 22px; z-index:5; }
+  .name { font:900 27px system-ui; color:#1b1b1f; text-transform:capitalize; }
+  .num { font:800 13px ui-monospace,monospace; color:color-mix(in srgb,var(--t) 70%,#333); }
+  .chips { display:flex; gap:8px; margin:10px 0 4px; }
+  .chip { font:700 11px system-ui; color:#fff; padding:4px 12px; border-radius:999px; }
+  h4.sec { font:800 13px system-ui; text-transform:uppercase; letter-spacing:.6px; color:#999; margin:16px 0 8px; }
+  .stat-row { display:flex; align-items:center; gap:8px; margin:7px 0; font:700 12px system-ui; }
+  .stat-row .lbl { width:54px; color:#777; }
+  .stat-row .val { width:28px; text-align:right; color:#222; }
+  .track { flex:1; height:8px; border-radius:999px; background:#eee; overflow:hidden; }
+  .fill { height:100%; border-radius:999px; background:linear-gradient(90deg, var(--t), color-mix(in srgb,var(--t) 60%,#000)); }
+  .hw { display:flex; gap:10px; margin:14px 0 4px; }
+  .hw div { flex:1; background:#f4f4f6; border-radius:14px; padding:8px 12px; font:700 13px system-ui; color:#222; }
+  .hw small { display:block; color:#999; font-weight:600; font-size:10px; text-transform:uppercase; letter-spacing:.4px; }
+</style>
+
+<div style="display:flex; justify-content:center;">
+  <div class="card" data-choice="a-final" onclick="toggleSelect(this)" style="max-width:340px;">
+    <div class="card-image" style="padding:0;background:none;display:flex;justify-content:center;">
+      <div class="ph">
+        <div class="topbar"><span>‹</span><span class="acts"><span>♡</span><span>👥</span></span></div>
+        <div class="hero">
+          <div class="glow"></div>
+          <img class="art" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/6.png">
+        </div>
+        <div class="sheet">
+          <div class="num">#006</div><div class="name">Charizard</div>
+          <div class="chips"><span class="chip" style="background:#EE8130">Fire</span><span class="chip" style="background:#A98FF3">Flying</span></div>
+          <h4 class="sec">Base stats</h4>
+          <div class="stat-row"><span class="lbl">HP</span><div class="track"><div class="fill" style="width:31%"></div></div><span class="val">78</span></div>
+          <div class="stat-row"><span class="lbl">Attack</span><div class="track"><div class="fill" style="width:33%"></div></div><span class="val">84</span></div>
+          <div class="stat-row"><span class="lbl">Defense</span><div class="track"><div class="fill" style="width:31%"></div></div><span class="val">78</span></div>
+          <div class="stat-row"><span class="lbl">Sp. Atk</span><div class="track"><div class="fill" style="width:43%"></div></div><span class="val">109</span></div>
+          <div class="stat-row"><span class="lbl">Sp. Def</span><div class="track"><div class="fill" style="width:33%"></div></div><span class="val">85</span></div>
+          <div class="stat-row"><span class="lbl">Speed</span><div class="track"><div class="fill" style="width:39%"></div></div><span class="val">100</span></div>
+          <div class="hw"><div><small>Height</small>1.7 m</div><div><small>Weight</small>90.5 kg</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body"><h3>Detail hero — final</h3><p>Full artwork above a curved white sheet, type gradient behind, soft glow for depth. Stat bars fill with a spring on open.</p></div>
+  </div>
+</div>

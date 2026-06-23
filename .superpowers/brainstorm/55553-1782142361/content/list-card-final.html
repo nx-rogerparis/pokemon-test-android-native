@@ -1,0 +1,49 @@
+<h2>Type Card — final name darkness</h2>
+<p class="subtitle">Variant 1 with a darker name. Pick the darkness that feels right.</p>
+
+<style>
+  .pd-phone { background:#f2f3f5; border-radius:22px; padding:14px; display:flex; flex-direction:column; gap:12px; }
+  .pd-row { position:relative; overflow:hidden; border-radius:20px; padding:14px 16px; min-height:92px; display:flex; align-items:center; justify-content:space-between; box-shadow:0 6px 16px rgba(0,0,0,.12); background:linear-gradient(100deg, color-mix(in srgb, var(--t) 38%, #fff) 0%, #fff 78%); }
+  .pd-meta { z-index:2; }
+  .pd-num  { font:800 12px ui-monospace, monospace; letter-spacing:.5px; color:var(--t); }
+  .pd-name { font:800 22px system-ui, sans-serif; margin:2px 0 8px; text-transform:capitalize; }
+  .pd-chips { display:flex; gap:6px; }
+  .pd-chip { font:700 11px system-ui; color:#fff; padding:3px 10px; border-radius:999px; }
+  .pd-art { width:84px; height:84px; object-fit:contain; z-index:2; filter:drop-shadow(0 4px 8px rgba(0,0,0,.25)); }
+  .grass { --t:#7AC74C; } .fire { --t:#EE8130; }
+
+  /* Darker: mostly black with a hint of type hue */
+  .dark  .pd-name { color:color-mix(in srgb, var(--t) 35%, #141414); }
+  /* Darkest: near-black, faint type warmth */
+  .darker .pd-name { color:color-mix(in srgb, var(--t) 18%, #0f0f10); }
+</style>
+
+<div class="cards">
+  <div class="card" data-choice="darker35" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding:0;background:none;">
+      <div class="pd-phone dark">
+        <div class="pd-row grass"><div class="pd-meta"><div class="pd-num">#001</div><div class="pd-name">Bulbasaur</div>
+          <div class="pd-chips"><span class="pd-chip" style="background:#7AC74C">Grass</span><span class="pd-chip" style="background:#A33EA1">Poison</span></div></div>
+          <img class="pd-art" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png"></div>
+        <div class="pd-row fire"><div class="pd-meta"><div class="pd-num">#004</div><div class="pd-name">Charmander</div>
+          <div class="pd-chips"><span class="pd-chip" style="background:#EE8130">Fire</span></div></div>
+          <img class="pd-art" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/4.png"></div>
+      </div>
+    </div>
+    <div class="card-body"><h3>Darker</h3><p>Mostly black with a clear hint of the type hue. Still feels colourful.</p></div>
+  </div>
+
+  <div class="card" data-choice="darkest18" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding:0;background:none;">
+      <div class="pd-phone darker">
+        <div class="pd-row grass"><div class="pd-meta"><div class="pd-num">#001</div><div class="pd-name">Bulbasaur</div>
+          <div class="pd-chips"><span class="pd-chip" style="background:#7AC74C">Grass</span><span class="pd-chip" style="background:#A33EA1">Poison</span></div></div>
+          <img class="pd-art" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png"></div>
+        <div class="pd-row fire"><div class="pd-meta"><div class="pd-num">#004</div><div class="pd-name">Charmander</div>
+          <div class="pd-chips"><span class="pd-chip" style="background:#EE8130">Fire</span></div></div>
+          <img class="pd-art" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/4.png"></div>
+      </div>
+    </div>
+    <div class="card-body"><h3>Darkest</h3><p>Near-black with just faint type warmth. Maximum contrast / readability.</p></div>
+  </div>
+</div>
